@@ -3,7 +3,7 @@ use ethereum_types::{H160, H256, H64, U256, U64};
 use jsonrpc_core::{BoxFuture, Result};
 
 use eth_rpc_core::types::{
-	BlockNumber, Bytes, CallRequest, EthAccount, Filter, Index, Log, Receipt, RichBlock,
+	BlockNumber, Bytes, CallRequest, EthAccount, Filter, Index, Log, Receipt, RichBlock, SyncInfo,
 	SyncStatus, Transaction, Work,
 };
 
@@ -18,7 +18,18 @@ impl EthApi for EthRpcImpl {
 	}
 
 	fn syncing(&self) -> Result<SyncStatus> {
-		unimplemented!("syncing");
+		return Ok(SyncStatus::Info(SyncInfo {
+			/// Starting block
+			starting_block: U256::from(0x384),
+			/// Current block
+			current_block: U256::from(0x384),
+			/// Highest block seen so far
+			highest_block: U256::from(0x454),
+			/// Warp sync snapshot chunks total.
+			warp_chunks_amount: Some(U256::from(0x384)),
+			/// Warp sync snpashot chunks processed.
+			warp_chunks_processed: Some(U256::from(0x384)),
+		}));
 	}
 
 	fn hashrate(&self) -> Result<U256> {
