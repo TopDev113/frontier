@@ -17,17 +17,24 @@
 //! Test utilities
 
 use super::*;
-use crate::{Module, Trait};
+use crate::{Module, Trait, Block as EthereumBlock, Transaction as EthereumTransaction};
 use ethereum::{TransactionAction, TransactionSignature};
 use frame_support::{impl_outer_origin, parameter_types, weights::Weight};
 use pallet_evm::{FeeCalculator, HashTruncateConvertAccountId};
 use rlp::*;
 use sp_core::{H160, H256, U256};
 use sp_runtime::{
-    testing::Header,
-    traits::{BlakeTwo256, IdentityLookup},
+    generic::Header,
+    create_runtime_str,
+    testing::{Header as TestingHeader},
+    traits::{BlakeTwo256, IdentityLookup, Block as BlockT},
+    transaction_validity::{
+		TransactionValidity, ValidTransaction, TransactionValidityError, InvalidTransaction,
+		TransactionSource,
+	},
     ModuleId, Perbill,
 };
+use sp_api::impl_runtime_apis;
 
 impl_outer_origin! {
     pub enum Origin for Test where system = frame_system {}
@@ -53,7 +60,7 @@ impl frame_system::Trait for Test {
     type Hashing = BlakeTwo256;
     type AccountId = H160;
     type Lookup = IdentityLookup<Self::AccountId>;
-    type Header = Header;
+    type Header = TestingHeader;
     type Event = ();
     type BlockHashCount = BlockHashCount;
     type MaximumBlockWeight = MaximumBlockWeight;
@@ -225,4 +232,138 @@ impl UnsignedTransaction {
             signature: sig,
         }
     }
+}
+
+pub use pallet_evm::Account as EVMAccount;
+use sp_version::RuntimeVersion;
+use substrate_test_runtime_client::runtime::Block as TestBlock;
+
+/// This runtime version.
+pub const VERSION: RuntimeVersion = RuntimeVersion {
+	spec_name: create_runtime_str!("node-frontier-template"),
+	impl_name: create_runtime_str!("node-frontier-template"),
+	authoring_version: 1,
+	spec_version: 1,
+	impl_version: 1,
+	apis: RUNTIME_API_VERSIONS,
+	transaction_version: 1,
+};
+
+pub type AllModules = u64;
+pub type Executive =
+	frame_executive::Executive<Test, TestBlock, frame_system::ChainContext<Test>, Test, AllModules>;
+// pub type BlockNumber = u32;
+// pub type GenericHeader = sp_runtime::generic::Header<BlockNumber, BlakeTwo256>;
+// pub type Block = sp_runtime::generic::Block<GenericHeader, sp_runtime::OpaqueExtrinsic>;
+
+impl_runtime_apis! { 
+	impl sp_api::Core<TestBlock> for Test {
+		fn version() -> RuntimeVersion {
+			VERSION
+		}
+
+		fn execute_block(block: TestBlock) {
+			//Executive::execute_block(block)
+		}
+
+		fn initialize_block(header: &<TestBlock as BlockT>::Header) {
+			//Executive::initialize_block(header)
+		}
+	}
+
+    impl sp_transaction_pool::runtime_api::TaggedTransactionQueue<TestBlock> for Test {
+        fn validate_transaction(
+            _source: TransactionSource,
+            utx: <TestBlock as BlockT>::Extrinsic,
+        ) -> TransactionValidity {
+            return Ok(ValidTransaction{
+                priority: 0 as u64,
+                requires: vec![],
+                provides: vec![],
+                longevity: 1,
+                propagate: false,
+            });
+            // if let sp_runtime::OpaqueExtrinsic::IncludeData(data) = utx {
+            //     return Ok(ValidTransaction{
+            //         priority: data.len() as u64,
+            //         requires: vec![],
+            //         provides: vec![data],
+            //         longevity: 1,
+            //         propagate: false,
+            //     });
+            // }
+
+            // frame_system::validate_transaction(utx)
+        }
+    }
+
+	impl frontier_rpc_primitives::EthereumRuntimeApi<TestBlock> for Test {
+		fn chain_id() -> u64 {
+			0 as u64
+		}
+
+		fn account_basic(address: H160) -> EVMAccount {
+			pallet_evm::Module::<Test>::accounts(address)
+		}
+
+		fn transaction_status(hash: H256) -> Option<frontier_rpc_primitives::TransactionStatus> {
+			Ethereum::transaction_status(hash)
+		}
+
+		fn gas_price() -> U256 {
+			U256::zero()
+		}
+
+		fn account_code_at(address: H160) -> Vec<u8> {
+			pallet_evm::Module::<Test>::account_codes(address)
+		}
+
+		fn author() -> H160 {
+			H160::default()
+		}
+
+		fn storage_at(address: H160, index: U256) -> H256 {
+			H256::default()
+		}
+
+		fn block_by_number(number: u32) -> Option<EthereumBlock> {
+			Ethereum::block_by_number(number.into())
+		}
+
+		fn block_transaction_count_by_number(number: u32) -> Option<U256> {
+			None
+		}
+
+		fn block_transaction_count_by_hash(hash: H256) -> Option<U256> {
+			None
+		}
+
+		fn block_by_hash(hash: H256) -> Option<EthereumBlock> {
+			Ethereum::block_by_hash(hash)
+		}
+
+		fn transaction_by_hash(hash: H256) -> Option<(
+			EthereumTransaction, 
+			EthereumBlock, 
+			TransactionStatus)> {
+			Ethereum::transaction_by_hash(hash)
+		}
+
+		fn transaction_by_block_hash_and_index(hash: H256, index: u32) -> Option<(
+			EthereumTransaction, 
+			EthereumBlock, 
+			TransactionStatus)> {
+			Ethereum::transaction_by_block_hash_and_index(hash, index)
+		}
+
+		fn transaction_by_block_number_and_index(number: u32, index: u32) -> Option<(
+			EthereumTransaction, 
+			EthereumBlock, 
+			TransactionStatus)> {
+			Ethereum::transaction_by_block_number_and_index(
+				number.into(), 
+				index
+			)
+		}
+	}
 }

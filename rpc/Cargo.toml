@@ -23,6 +23,16 @@ sc-client-api = { path = "../vendor/substrate/client/api" }
 ethereum = { version = "0.2", features = ["codec"] }
 codec = { package = "parity-scale-codec", version = "1.0.0" }
 rlp = "0.4"
-pallet-ethereum = "0.1"
+#pallet-ethereum = "0.1"
+pallet-ethereum = { path = "../frame/ethereum" }
 futures = { version = "0.3.1", features = ["compat"] }
 sha3 = "0.8"
+
+[dev-dependencies]
+substrate-test-runtime-client = { path = "../vendor/substrate/test-utils/runtime/client" }
+sp-version = { path = "../vendor/substrate/primitives/version" }
+sp-blockchain = { path = "../vendor/substrate/primitives/blockchain" }
+sp-core = { path = "../vendor/substrate/primitives/core" }
+sc-transaction-pool = { path = "../vendor/substrate/client/transaction-pool" }
+sc-executor = { path = "../vendor/substrate/client/executor" }
+sc-consensus = { path = "../vendor/substrate/client/consensus/common" }

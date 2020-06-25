@@ -24,9 +24,12 @@ rlp = { version = "0.4", default-features = false }
 sha3 = { version = "0.8", default-features = false }
 libsecp256k1 = { version = "0.3", default-features = false }
 frontier-rpc-primitives = { path = "../../rpc/primitives", default-features = false }
-
-[dev-dependencies]
 sp-core = { version = "2.0.0-dev", path = "../../vendor/substrate/primitives/core" }
+sp-api = { version = "2.0.0-dev", path = "../../vendor/substrate/primitives/api" }
+sp-version = { version = "2.0.0-dev", path = "../../vendor/substrate/primitives/version" }
+sp-transaction-pool = { version = "2.0.0-dev", path = "../../vendor/substrate/primitives/transaction-pool" }
+frame-executive = { version = "2.0.0-dev", path = "../../vendor/substrate/frame/executive" }
+substrate-test-runtime-client = { path = "../../vendor/substrate/test-utils/runtime/client" }
 
 [features]
 default = ["std"]
