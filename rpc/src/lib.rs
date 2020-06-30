@@ -548,17 +548,20 @@ impl<B, C, SC, P, CT, BE> EthApiT for EthApi<B, C, SC, P, CT, BE> where
 	fn transaction_receipt(&self, hash: H256) -> Result<Option<Receipt>> {
 		let header = self.select_chain.best_chain()
 			.map_err(|_| internal_err("fetch header failed"))?;
-		let status = self.client.runtime_api()
-			.transaction_status(&BlockId::Hash(header.hash()), hash)
+		let result = self.client.runtime_api()
+			.transaction_by_hash(&BlockId::Hash(header.hash()), hash)
 			.map_err(|_| internal_err("fetch runtime transaction status failed"))?;
-		let receipt = status.map(|status| {
+
+		let receipt = result.map(|(_, block, status)| {
 			Receipt {
 				transaction_hash: Some(status.transaction_hash),
 				transaction_index: Some(status.transaction_index.into()),
-				block_hash: Some(Default::default()),
+				block_hash: Some(H256::from_slice(
+					Keccak256::digest(&rlp::encode(&block.header)).as_slice()
+				)),
 				from: Some(status.from),
 				to: status.to,
-				block_number: Some(Default::default()),
+				block_number: Some(block.header.number),
 				cumulative_gas_used: Default::default(),
 				gas_used: Some(Default::default()),
 				contract_address: status.contract_address,
