@@ -23,6 +23,28 @@ sc-client-api = { path = "../vendor/substrate/client/api" }
 ethereum = { version = "0.2", features = ["codec"] }
 codec = { package = "parity-scale-codec", version = "1.0.0" }
 rlp = "0.4"
-pallet-ethereum = "0.1"
+pallet-ethereum = { path = "../frame/ethereum" }
 futures = { version = "0.3.1", features = ["compat"] }
 sha3 = "0.8"
+
+[dev-dependencies]
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+support = { version = "2.0.0-dev", default-features = false, package = "frame-support", path = "../vendor/substrate/frame/support" }
+system = { version = "2.0.0-dev", default-features = false, package = "frame-system", path = "../vendor/substrate/frame/system" }
+frame-executive = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/frame/executive" }
+pallet-evm = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/frame/evm" }
+pallet-balances = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/frame/balances" }
+pallet-timestamp = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/frame/timestamp" }
+frame-system-rpc-runtime-api = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/frame/system/rpc/runtime-api/" }
+sp-version = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/primitives/version" }
+sp-core = { version = "2.0.0-dev", path = "../vendor/substrate/primitives/core" }
+sp-io = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/primitives/io" }
+sp-application-crypto = { version = "2.0.0-rc3", default-features = false, path = "../vendor/substrate/primitives/application-crypto" }
+sp-offchain = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/primitives/offchain" }
+sp-block-builder = { path = "../vendor/substrate/primitives/block-builder", default-features = false, version = "2.0.0-dev"}
+sp-inherents = { path = "../vendor/substrate/primitives/inherents", default-features = false, version = "2.0.0-dev"}
+randomness-collective-flip = { version = "2.0.0-dev", default-features = false, package = "pallet-randomness-collective-flip", path = "../vendor/substrate/frame/randomness-collective-flip" }
+libsecp256k1 = { version = "0.3", default-features = false }
+serde = { version = "1.0.101", features = ["derive"] }
+parity-util-mem = { version = "0.6.1", default-features = false, features = ["primitive-types"] }
+sp-std = { version = "2.0.0-dev", default-features = false, path = "../vendor/substrate/primitives/std" }

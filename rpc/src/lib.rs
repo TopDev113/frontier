@@ -45,6 +45,13 @@ fn internal_err(message: &str) -> Error {
 	}
 }
 
+#[cfg(all(test))]
+mod tests;
+
+#[cfg(all(test))]
+mod mock;
+
+
 pub struct EthApi<B: BlockT, C, SC, P, CT, BE> {
 	pool: Arc<P>,
 	client: Arc<C>,
