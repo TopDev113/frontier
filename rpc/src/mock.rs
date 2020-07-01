@@ -76,37 +76,6 @@ impl pallet_balances::Trait for Test {
 	type AccountStore = System;
 }
 
-parameter_types! {
-	pub const MinimumPeriod: u64 = 6000 / 2;
-}
-
-impl pallet_timestamp::Trait for Test {
-	type Moment = u64;
-	type OnTimestampSet = ();
-	type MinimumPeriod = MinimumPeriod;
-}
-
-pub struct FixedGasPrice;
-impl FeeCalculator for FixedGasPrice {
-	fn min_gas_price() -> U256 {
-		1.into()
-	}
-}
-
-parameter_types! {
-	pub const TransactionByteFee: u64 = 1;
-	pub const EVMModuleId: ModuleId = ModuleId(*b"py/evmpa");
-}
-
-impl pallet_evm::Trait for Test {
-	type ModuleId = EVMModuleId;
-	type FeeCalculator = FixedGasPrice;
-	type ConvertAccountId = HashTruncateConvertAccountId<BlakeTwo256>;
-	type Currency = Balances;
-	type Event = ();
-	type Precompiles = ();
-}
-
 impl Trait for Test {
 	type Event = ();
 }
@@ -121,10 +90,7 @@ support::construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: system::{Module, Call, Event<T>},
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
-		Ethereum: pallet_ethereum::{Module, Call, Storage, Event<T>, ValidateUnsigned},
-		Evm: pallet_evm::{Module, Config, Call, Storage, Event<T>},
-		RandomnessCollectiveFlip: randomness_collective_flip::{Module, Call, Storage},
+		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>}
 	}
 );
 
