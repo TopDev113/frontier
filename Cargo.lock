@@ -1083,23 +1083,42 @@ version = "0.1.0"
 dependencies = [
  "ethereum",
  "ethereum-types",
+ "frame-executive",
+ "frame-support",
+ "frame-system",
+ "frame-system-rpc-runtime-api",
  "frontier-rpc-core",
  "frontier-rpc-primitives",
  "futures 0.3.5",
  "jsonrpc-core",
  "jsonrpc-core-client",
  "jsonrpc-derive",
- "pallet-ethereum 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libsecp256k1",
+ "pallet-balances",
+ "pallet-ethereum",
+ "pallet-evm",
+ "pallet-randomness-collective-flip",
+ "pallet-timestamp",
  "parity-scale-codec",
+ "parity-util-mem",
  "rlp",
  "sc-client-api",
  "sc-service",
+ "serde",
  "sha3",
  "sp-api",
+ "sp-application-crypto",
+ "sp-block-builder",
  "sp-consensus",
+ "sp-core",
+ "sp-inherents",
+ "sp-io",
+ "sp-offchain",
  "sp-runtime",
+ "sp-std",
  "sp-storage",
  "sp-transaction-pool",
+ "sp-version",
 ]
 
 [[package]]
@@ -1180,7 +1199,7 @@ dependencies = [
  "frontier-rpc-primitives",
  "pallet-aura",
  "pallet-balances",
- "pallet-ethereum 0.1.0",
+ "pallet-ethereum",
  "pallet-evm",
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
@@ -2972,12 +2991,6 @@ dependencies = [
  "sp-runtime",
  "sp-std",
 ]
-
-[[package]]
-name = "pallet-ethereum"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd4556fb64842e71bb6e2f98b7541c0d310069eb607d432c6ac9bdaecbfd3118"
 
 [[package]]
 name = "pallet-evm"
